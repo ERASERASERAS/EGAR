@@ -46,7 +46,7 @@ public class DataHolder {
             items.add(new Item(02, 01, "Jeans"));
             items.add(new Item(03, 02, "Guitar"));
             lots.add(new Lot(00, 00, 3232, 02, new GregorianCalendar(2013,1,25), 00, 1));
-            lots.add(new Lot(01, 01, 34532, 01, new GregorianCalendar(2017,11,23),00, 2));
+            lots.add(new Lot(01, 01, 34532, 01, new GregorianCalendar(2017,10,23),00, 2));
             lots.add(new Lot(02, 02, 895839,02, new GregorianCalendar(2018,0,22), 01,3));
             lots.add(new Lot(03, 03, 80000, 01, new GregorianCalendar(2017,10, 21), 02,5));
             bets.add(new Bet(00, 01, 00, 3232));

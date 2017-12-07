@@ -5,6 +5,7 @@ import model.Bet;
 import model.Lot;
 import model.exceptions.BadBetException;
 import model.exceptions.DoubleBetException;
+import model.exceptions.LotIsClosedException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +38,8 @@ public class BetController {
         return  returnedBet;
     }
 
-    public boolean addNewBet(int userId, int lotId, int price) throws DoubleBetException, BadBetException {
+    public boolean addNewBet(int userId, int lotId, int price) throws DoubleBetException, BadBetException, LotIsClosedException {
+        if(!new LotController().isOpened(new LotController().getLotById(lotId))) throw new LotIsClosedException("Лот закончился");
         if(checkOnDoubleBet(userId, lotId)) throw new DoubleBetException("Нельзя ставить два или более раза подряд!");
         if(checkOnBadBet(price, lotId)) throw new BadBetException("Надо поставить больше!");
         return DataHolder.getDataHolder().getBets().add(new Bet(DataHolder.getDataHolder().getBets().size() + 1, userId,
@@ -70,6 +72,17 @@ public class BetController {
             result = (lastBetOfLot.getPrice() > price);
         }
         return result;
+    }
+
+    public Bet getMaxBetByLot(Lot lot){
+        List<Bet> bets = getBetsByLot(lot);
+        Bet maxBet = bets.get(0);
+        for(Bet bet : bets) {
+            if(maxBet.getPrice() < bet.getPrice()){
+                maxBet = bet;
+            }
+        }
+        return maxBet;
     }
 
 

@@ -15,30 +15,35 @@ public class RegistrationMenu {
         this.userController = userController;
     }
 
-    public void registration()  throws RegistrationException {
-        System.out.println("Введите логин");
-        if (sc.hasNext()) {
-            String login = "";
-            String password = "";
-            try {
-                login = sc.next();
-                userController.checkDuplicateUsers(login);
-            }
-            catch(UserAlreadyExistException ex){
+    public void registration() throws RegistrationException, UserAlreadyExistException {
+        boolean end = false;
+        while (!end) {
+            System.out.println("Введите логин");
+            if (sc.hasNext()) {
+                String login = "";
+                String password = "";
+                try {
+                    login = sc.next();
+                    userController.checkDuplicateUsers(login);
+
+//            catch(UserAlreadyExistException ex){
+//                    System.out.println(ex.getMessage());
+//                    System.out.println("Попробуйте ещё раз");
+//            }
+                    System.out.println("Введите пароль");
+                    if (sc.hasNext()) {
+                        //Проверка валидности пароля
+                        password = sc.next();
+                    }
+                    if (!userController.addNewUser(login, password)) {
+                        throw new RegistrationException("Какие-то проблемы с регистрацией. Попробуйте ещё раз.");
+                    }
+                    end = true;
+                } catch (UserAlreadyExistException ex) {
                     System.out.println(ex.getMessage());
                     System.out.println("Попробуйте ещё раз");
+                }
             }
-            System.out.println("Введите пароль");
-            if (sc.hasNext()) {
-                //Проверка валидности пароля
-                password = sc.next();
-            }
-            if( userController.addNewUser(login, password)) {
-                throw new RegistrationException("Какие-то проблемы с регистрацией. Попробуйте ещё раз.");
-            }
-
-
-
         }
     }
 }

@@ -4,6 +4,7 @@ import data.DataHolder;
 import model.Category;
 import model.Item;
 import model.Lot;
+import model.exceptions.AddLotException;
 import model.exceptions.LotIsClosedException;
 
 import javax.xml.crypto.Data;
@@ -52,7 +53,7 @@ public class LotController {
         return returned;
     }
 
-    public boolean isOpened(Lot lot) throws LotIsClosedException{
+    public boolean isOpened(Lot lot){
         boolean result = false;
         Calendar currentDate = Calendar.getInstance();
         if(lot.getDate().get(Calendar.YEAR) > currentDate.get(Calendar.YEAR)){
@@ -62,7 +63,6 @@ public class LotController {
         } else if(lot.getDate().get(Calendar.DAY_OF_MONTH) > currentDate.get(Calendar.DAY_OF_MONTH)) {
             result = true;
         }
-        if(!result) throw new LotIsClosedException("Данный лот уже завершился");
         return result;
     }
 
@@ -75,9 +75,10 @@ public class LotController {
         return returnedLots;
     }
 
-    public boolean addNewLot(int itemId, int price, int userId, Calendar date, int categoryId, int count) {
-        return DataHolder.getDataHolder().getLots().add(new Lot(DataHolder.getDataHolder().getLots().size() + 1,
-                                                            itemId, price, userId, date, categoryId, count));
+    public void addNewLot(int itemId, int price, int userId, Calendar date, int categoryId, int count) throws AddLotException{
+        if(!DataHolder.getDataHolder().getLots().add(new Lot(DataHolder.getDataHolder().getLots().size() + 1,
+                                                            itemId, price, userId, date, categoryId, count)))
+            throw new AddLotException("Возникли проблемы с добавлением лота");
     }
 
 

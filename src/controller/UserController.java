@@ -8,8 +8,7 @@ import model.exceptions.UserAlreadyExistException;
 
 import javax.jws.soap.SOAPBinding;
 import javax.xml.crypto.Data;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -126,6 +125,52 @@ public class UserController {
         return DataHolder.getDataHolder().getUsers().add(new User(DataHolder.getDataHolder().getUsers().size() + 1,
                                                             login, password, AccessLevel.USER));
     }
+
+    public List<Lot> getParticipatedLots(User user){
+        List<Lot> returnedLots = new LinkedList<Lot>();
+        for(Bet bet : DataHolder.getDataHolder().getBets()){
+            if(user.getId() == bet.getUserId()){
+                returnedLots.add(new LotController().getLotById(bet.getLotId()));
+            }
+        }
+        return returnedLots;
+    }
+
+    public List<Lot> getClosedParticipatedLots(User user){
+        List<Lot> returnedLots = new LinkedList<Lot>();
+        for(Lot lot : getParticipatedLots(user)){
+            if(new LotController().isOpened(lot)){
+                returnedLots.add(lot);
+            }
+        }
+        return returnedLots;
+    }
+
+    public List<Lot> getWonLots(User user){
+        List<Lot> wonLots = new LinkedList<Lot>();
+        for(Lot lot : getClosedParticipatedLots(user)){
+            if(user.getId() == new BetController().getMaxBetByLot(lot).getUserId()){
+                wonLots.add(lot);
+            }
+        }
+        return wonLots;
+    }
+
+    public Map<Bet, Item> getBoughtItems(User user){
+        Map<Bet, Item> boughtItems = new HashMap<Bet,Item>();
+        List<Lot> wonLots = getWonLots(user);
+        for(Lot lot : wonLots){
+            boughtItems.put(new BetController().getMaxBetByLot(lot),new ItemController().getItemById(lot.getItemId()));
+        }
+        return boughtItems;
+    }
+
+
+
+
+
+
+
 
 
 

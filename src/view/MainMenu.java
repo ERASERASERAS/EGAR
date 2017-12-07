@@ -3,6 +3,7 @@ package view;
 import controller.*;
 import model.User;
 import model.exceptions.RegistrationException;
+import model.exceptions.UserAlreadyExistException;
 
 import java.util.Scanner;
 
@@ -66,7 +67,10 @@ public class MainMenu {
                     try {
                         new RegistrationMenu(userController).registration();
                     }
-                    catch (RegistrationException ex){
+                    catch (UserAlreadyExistException ex){
+                        System.out.println(ex.getMessage());
+                    }
+                    catch(RegistrationException ex){
                         System.out.println(ex.getMessage());
                     }
                 }
